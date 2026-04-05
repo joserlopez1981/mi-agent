@@ -137,7 +137,7 @@ miAgente/
 1. El usuario escribe una tarea o pregunta.
 2. El agente envía el contexto del proyecto + la solicitud al modelo `llama3.2:3b` vía la API local de Ollama.
 3. El modelo responde usando etiquetas `<thought>` para razonar y luego emite una acción:
-   - `EXEC_COMMAND: <comando>` — ejecuta un comando en PowerShell.
+   - `EXEC_COMMAND: <comando>` — ejecuta un comando en PowerShell (Windows) o bash (macOS/Linux), detectado automáticamente.
    - `WRITE_FILE: <ruta> | CONTENT: <contenido>` — crea o sobreescribe un archivo.
 4. El resultado de la acción se devuelve al usuario y se acumula en el historial de la conversación.
 
