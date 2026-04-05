@@ -3,9 +3,10 @@ import path from 'path';
 import { AgentExecutor } from '../agent/executor';
 import { FileSystemTool } from '../tools/filesystem';
 import { CLAUDE_STYLE_SYSTEM_PROMPT } from '../prompts/engine';
+import { OLLAMA_MODEL, OLLAMA_URL, SERVER_PORT } from '../config';
 
 const app = express();
-const PORT = 3000;
+const PORT = SERVER_PORT;
 
 app.use(express.json());
 app.use(express.static(path.join(process.cwd(), 'public')));
@@ -13,9 +14,9 @@ app.use(express.static(path.join(process.cwd(), 'public')));
 const sessions = new Map<string, string>();
 
 async function askLLM(context: string): Promise<string> {
-  const res = await fetch('http://localhost:11434/api/generate', {
+  const res = await fetch(`${OLLAMA_URL}/api/generate`, {
     method: 'POST',
-    body: JSON.stringify({ model: 'llama3.2:3b', prompt: `${CLAUDE_STYLE_SYSTEM_PROMPT}\n${context}`, stream: false })
+    body: JSON.stringify({ model: OLLAMA_MODEL, prompt: `${CLAUDE_STYLE_SYSTEM_PROMPT}\n${context}`, stream: false })
   });
   const { response } = await res.json() as { response: string };
   return response;

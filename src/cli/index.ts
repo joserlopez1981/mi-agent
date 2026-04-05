@@ -2,11 +2,12 @@ import * as readline from 'readline';
 import { AgentExecutor } from '../agent/executor';
 import { FileSystemTool } from '../tools/filesystem';
 import { CLAUDE_STYLE_SYSTEM_PROMPT } from '../prompts/engine';
+import { OLLAMA_MODEL, OLLAMA_URL } from '../config';
 
 async function askLLM(context: string): Promise<string> {
-  const res = await fetch('http://localhost:11434/api/generate', {
+  const res = await fetch(`${OLLAMA_URL}/api/generate`, {
     method: 'POST',
-    body: JSON.stringify({ model: 'llama3.2:3b', prompt: `${CLAUDE_STYLE_SYSTEM_PROMPT}\n${context}`, stream: false })
+    body: JSON.stringify({ model: OLLAMA_MODEL, prompt: `${CLAUDE_STYLE_SYSTEM_PROMPT}\n${context}`, stream: false })
   });
   const { response } = await res.json() as { response: string };
   return response;
