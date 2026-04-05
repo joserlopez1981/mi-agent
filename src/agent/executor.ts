@@ -11,8 +11,15 @@ export class AgentExecutor {
 
     if (response.includes("WRITE_FILE:")) {
       const match = response.match(/WRITE_FILE:\s*(\S+)\s*\| CONTENT:\s*([\s\S]+)/);
-      if (match) await this.fs.writeFile(match[1], match[2]);
-      return { type: 'WRITE', success: true, error: undefined };
+      if (!match) return { success: false, error: 'Formato WRITE_FILE inválido.' };
+      try {
+        await this.fs.writeFile(match[1], match[2]);
+        await this.logger.log('WRITE_FILE', match[1]);
+        return { type: 'WRITE', success: true, error: undefined };
+      } catch (err: any) {
+        await this.logger.log('WRITE_FILE_ERROR', err.message);
+        return { success: false, error: err.message };
+      }
     }
 
     if (response.includes("EXEC_COMMAND:")) {

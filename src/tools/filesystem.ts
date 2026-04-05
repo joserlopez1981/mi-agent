@@ -1,12 +1,23 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
+const BLOCKED = ['.env', '.git'];
+
 export class FileSystemTool {
   private rootDir = process.cwd();
 
   private securePath(targetPath: string): string {
     const resolved = path.resolve(this.rootDir, targetPath);
-    if (!resolved.startsWith(this.rootDir)) throw new Error("Acceso denegado fuera del root.");
+    // Usar path.relative es más robusto que startsWith para evitar path traversal
+    const relative = path.relative(this.rootDir, resolved);
+    if (relative.startsWith('..') || path.isAbsolute(relative)) {
+      throw new Error(`Acceso denegado: "${targetPath}" está fuera del directorio raíz.`);
+    }
+    // Bloquear archivos sensibles
+    const firstSegment = relative.split(path.sep)[0];
+    if (BLOCKED.includes(firstSegment)) {
+      throw new Error(`Acceso denegado: no se puede escribir en "${firstSegment}".`);
+    }
     return resolved;
   }
 
@@ -17,6 +28,8 @@ export class FileSystemTool {
   }
 
   async writeFile(filePath: string, content: string) {
-    await fs.writeFile(this.securePath(filePath), content, 'utf-8');
+    const safe = this.securePath(filePath);
+    await fs.mkdir(path.dirname(safe), { recursive: true });
+    await fs.writeFile(safe, content, 'utf-8');
   }
 }

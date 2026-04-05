@@ -143,6 +143,16 @@ miAgente/
 
 ---
 
+## Seguridad — sandbox de escritura de archivos
+
+El agente solo puede escribir archivos **dentro del directorio raíz del proyecto**. Cualquier intento de escribir fuera (ej. `../../etc/passwd`) o en archivos sensibles (`.env`, `.git/`) es bloqueado y devuelve un error al modelo.
+
+Archivos y directorios bloqueados por defecto: `.env`, `.git`.
+
+Para añadir más rutas bloqueadas edita el array `BLOCKED` en `src/tools/filesystem.ts`.
+
+---
+
 ## Solución de problemas
 
 **`fetch failed` / `ECONNREFUSED`**  
