@@ -5,7 +5,7 @@ const execAsync = promisify(exec);
 export class ShellExecutor {
   async execute(command: string) {
     try {
-      const { stdout, stderr } = await execAsync(command, { timeout: 30000 });
+      const { stdout, stderr } = await execAsync(command, { timeout: 30000, shell: 'powershell.exe' });
       return { stdout, stderr, success: true };
     } catch (error: any) {
       return { error: error.message, success: false };

@@ -12,7 +12,7 @@ export class AgentExecutor {
     if (response.includes("WRITE_FILE:")) {
       const match = response.match(/WRITE_FILE:\s*(\S+)\s*\| CONTENT:\s*([\s\S]+)/);
       if (match) await this.fs.writeFile(match[1], match[2]);
-      return { type: 'WRITE', success: true };
+      return { type: 'WRITE', success: true, error: undefined };
     }
 
     if (response.includes("EXEC_COMMAND:")) {
